@@ -1,0 +1,29 @@
+name: Comment Check
+on:
+  issue_comment:
+    types:
+      - created
+
+jobs:
+  check-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set failure exit code
+        run: exit 1
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check Comment
+        run: |
+          if [ "${{ github.event.action }}" == "created" ]; then
+            typed_sentence="${{ github.event.comment.body }}"
+            expected_sentence="I acknolwedge that I am merging in during a code freeze"
+            
+            if echo "$typed_sentence" | grep -qF "$expected_sentence";
+              echo "Acknowledged"
+              exit 0
+            else
+              echo "Waiting for acknowedgement"
+              exit 1
+            fi
+          fi

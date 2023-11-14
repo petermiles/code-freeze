@@ -25,6 +25,12 @@ for (const { start, end, reason } of codeFreezes) {
 
       const labelName = "Failed Codefreeze Check";
 
+      console.log("here it is", {
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: prNumber,
+        labels: [labelName],
+      });
       // Add label
       octokit.rest.issues.addLabels({
         owner: context.repo.owner,

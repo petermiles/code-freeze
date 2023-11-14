@@ -29,14 +29,14 @@ for (const { start, end, reason } of codeFreezes) {
 
       console.log("here it is", {
         owner: context.payload.repository.owner,
-        repo: context.payload.repository.name,
+        repo: context.payload.repository,
         issue_number: prNumber,
         labels: [labelName],
       });
       // Add label
       octokit.rest.issues.addLabels({
         owner: context.payload.repository.owner,
-        repo: context.payload.repository.name,
+        repo: context.payload.repository,
         issue_number: prNumber,
         labels: [labelName],
       });

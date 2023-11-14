@@ -1,29 +1,21 @@
 name: Comment Check
 on:
+  pull_request:
+    types: [opened]
   issue_comment:
-    types:
-      - created
+    types: [created]
 
 jobs:
   check-comment:
     runs-on: ubuntu-latest
     steps:
-      - name: Set failure exit code
-        run: exit 1
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: khan/pull-request-comment-trigger@v1.1.0
+        id: check
+        with:
+          trigger: "I acknowledge that I am merging in code during a code freeze"
+          reaction: check
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Check Comment
-        run: |
-          if [ "${{ github.event.action }}" == "created" ]; then
-            typed_sentence="${{ github.event.comment.body }}"
-            expected_sentence="I acknolwedge that I am merging in during a code freeze"
-            
-            if echo "$typed_sentence" | grep -qF "$expected_sentence";
-              echo "Acknowledged"
-              exit 0
-            else
-              echo "Waiting for acknowedgement"
-              exit 1
-            fi
-          fi
+      - run: "echo Found it!"
+        if: steps.check.outputs.triggered == 'true'

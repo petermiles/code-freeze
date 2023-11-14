@@ -19,7 +19,7 @@ for (const { start, end, reason } of codeFreezes) {
     const githubToken = process.env.GITHUB_TOKEN;
     const context = github.context;
 
-    // console.log({ context });
+    console.log({ ght: githubToken });
 
     if (context.eventName === "pull_request") {
       const octokit = github.getOctokit(githubToken);

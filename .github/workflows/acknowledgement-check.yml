@@ -9,6 +9,8 @@ on:
 jobs:
   check-for-freeze:
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -28,8 +30,6 @@ jobs:
       - name: Check if code freeze
         id: codefreeze
         run: node .github/scripts/check-for-codefreeze.js
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   check-for-failed-label:
     needs: check-for-freeze

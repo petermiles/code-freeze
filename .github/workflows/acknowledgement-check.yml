@@ -28,21 +28,22 @@ jobs:
       - name: Check if code freeze
         id: codefreeze
         run: node .github/scripts/check-for-codefreeze.js
-
-  check-comment:
-    needs: check-for-freeze
-    runs-on: ubuntu-latest
-    if: failure()
-    steps:
-      - name: Check for specific comment
-        uses: khan/pull-request-comment-trigger@v1.1.0
-        id: check
-        with:
-          trigger: "SPECIFIC COMMENT"
-          reaction: rocket
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Pass if specific comment found
-        run: exit 0
-        if: steps.check.outputs.triggered == 'true'
+  check-for-failed-label:
+    needs: check-for-freeze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+
+      - name: Check for Failed Codefreeze Check label
+        run: node .github/scripts/check-for-failed-label.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

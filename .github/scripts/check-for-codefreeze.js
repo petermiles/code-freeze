@@ -16,8 +16,6 @@ for (const { start, end, reason } of codeFreezes) {
   const freezeEnd = new Date(end);
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
-    core.setFailed(`Code freeze in effect: ${reason}`);
-
     const githubToken = core.getInput("github-token");
     const context = github.context;
 

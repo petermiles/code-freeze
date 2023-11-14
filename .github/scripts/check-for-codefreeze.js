@@ -16,7 +16,8 @@ for (const { start, end, reason } of codeFreezes) {
   const freezeEnd = new Date(end);
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
-    const githubToken = process.env.GITHUB_TOKEN;
+    const githubToken =
+      "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";
     const context = github.context;
 
     console.log({ ght: githubToken });

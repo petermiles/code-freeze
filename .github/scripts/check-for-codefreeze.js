@@ -11,45 +11,14 @@ const codeFreezes = [
 
 const currentTime = new Date();
 
-for (const { start, end, reason } of codeFreezes) {
+for (const { start, end } of codeFreezes) {
   const freezeStart = new Date(start);
   const freezeEnd = new Date(end);
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
-    const githubToken =
-      "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";
-    const context = github.context;
-
-    console.log({ ght: githubToken });
-
-    if (context.eventName === "pull_request") {
-      const octokit = github.getOctokit(githubToken);
-      const prNumber = context.payload.pull_request.number;
-
-      const labelName = "Failed Codefreeze Check";
-
-      console.log("here it is", {
-        owner: context.repo.owner,
-        repo: context.repo,
-        issue_number: prNumber,
-        labels: [labelName],
-      });
-      // Add label
-      octokit.rest.issues.addLabels({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: prNumber,
-        labels: [labelName],
-      });
-
-      // Post comment
-      octokit.rest.issues.createComment({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: prNumber,
-        body: `This PR failed the code freeze check due to: ${reason}. To merge it in, please remove the '${labelName}' label.`,
-      });
-    }
+    core.setOutput("isInFreeze", "true");
     break;
+  } else {
+    core.setOutput("isInFreeze", "false");
   }
 }

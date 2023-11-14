@@ -36,7 +36,7 @@ for (const { start, end, reason } of codeFreezes) {
       // Add label
       octokit.rest.issues.addLabels({
         owner: context.repo.owner,
-        repo: context.repo,
+        repo: context.repo.repo,
         issue_number: prNumber,
         labels: [labelName],
       });

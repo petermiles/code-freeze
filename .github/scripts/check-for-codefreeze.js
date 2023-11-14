@@ -1,3 +1,4 @@
+const github = require("@actions/github");
 const core = require("@actions/core");
 
 const codeFreezes = [
@@ -16,6 +17,32 @@ for (const { start, end, reason } of codeFreezes) {
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
     core.setFailed(`Code freeze in effect: ${reason}`);
+
+    const githubToken = core.getInput("github-token");
+    const context = github.context;
+
+    if (context.eventName === "pull_request") {
+      const octokit = github.getOctokit(githubToken);
+      const prNumber = context.payload.pull_request.number;
+
+      const labelName = "Failed Codefreeze Check";
+
+      // Add label
+      octokit.issues.addLabels({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: prNumber,
+        labels: [labelName],
+      });
+
+      // Post comment
+      octokit.issues.createComment({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: prNumber,
+        body: `This PR failed the code freeze check due to: ${reason}. To merge it in, please remove the '${labelName}' label.`,
+      });
+    }
     break;
   }
 }

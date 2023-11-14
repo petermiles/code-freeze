@@ -5,6 +5,8 @@ async function run() {
   const githubToken = process.env["github-token"];
   const context = github.context;
 
+  console.log({ githubToken });
+
   if (context.eventName === "pull_request") {
     const octokit = github.getOctokit(githubToken);
     const prNumber = context.payload.pull_request.number;

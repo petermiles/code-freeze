@@ -1,4 +1,4 @@
-name: Check for Code Freeze
+name: Code Freeze and Comment Check
 
 on:
   pull_request:
@@ -7,19 +7,27 @@ on:
     types: [created]
 
 jobs:
-  check:
+  check-for-freeze:
     runs-on: ubuntu-latest
-
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Use Node.js
-        uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
-          node-version: 14
+          cache: "npm"
 
-      - name: Check Freeze
+      - name: Install npm v9
+        shell: bash
+        run: npm i -g npm@9.2.0
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Check if code freeze
         id: codefreeze
         run: node .github/scripts/check-for-codefreeze.js
 
@@ -48,3 +56,20 @@ jobs:
               issue_number: context.issue.number,
               body: 'This PR failed the code freeze check. To merge it, please remove the "Failed Codefreeze Check" label.'
             })
+
+  check-for-failed-label:
+    needs: check-for-freeze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+
+      - name: Check for Failed Codefreeze Check label
+        run: node .github/scripts/check-for-failed-label.js
+        env:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

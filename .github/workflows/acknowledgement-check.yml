@@ -29,7 +29,7 @@ jobs:
         id: codefreeze
         run: node .github/scripts/check-for-codefreeze.js
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   check-for-failed-label:
     needs: check-for-freeze
@@ -46,4 +46,4 @@ jobs:
       - name: Check for Failed Codefreeze Check label
         run: node .github/scripts/check-for-failed-label.js
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}

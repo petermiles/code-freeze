@@ -16,7 +16,7 @@ for (const { start, end, reason } of codeFreezes) {
   const freezeEnd = new Date(end);
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
-    const githubToken = core.getInput("github-token");
+    const githubToken = core.getInput("GITHUB_TOKEN");
     const context = github.context;
 
     if (context.eventName === "pull_request") {

@@ -15,7 +15,7 @@ for (const { start, end, reason } of codeFreezes) {
   const freezeEnd = new Date(end);
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
-    core.setFailed(reason);
+    core.setFailed(`Code freeze in effect: ${reason}`);
     break;
   }
 }

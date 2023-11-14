@@ -20,7 +20,7 @@ for (const { start, end, reason } of codeFreezes) {
     const context = github.context;
 
     if (context.eventName === "pull_request") {
-      const octokit = core.getOctokit(githubToken);
+      const octokit = github.getOctokit(githubToken);
       const prNumber = context.payload.pull_request.number;
 
       const labelName = "Failed Codefreeze Check";

@@ -18,6 +18,4 @@ for (const { start, end, reason } of codeFreezes) {
     core.setFailed(reason);
     break;
   }
-
-  process.exit(0);
 }

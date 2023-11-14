@@ -1,4 +1,5 @@
-name: Comment Check
+name: Code Freeze and Comment Check
+
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review, edited, closed]
@@ -6,8 +7,26 @@ on:
     types: [created]
 
 jobs:
-  check-comment:
+  check-for-freeze:
     runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+
+      - name: Check if code freeze
+        id: codefreeze
+        run: node .github/actions/check-code-freeze.js
+        continue-on-error: true
+
+  check-comment:
+    needs: check-for-freeze
+    runs-on: ubuntu-latest
+    if: failure()
     steps:
       - name: Check for specific comment
         uses: khan/pull-request-comment-trigger@v1.1.0

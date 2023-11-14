@@ -14,6 +14,9 @@ for (const { start, end, reason } of codeFreezes) {
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
     console.log(`Code freeze is in effect: ${reason}`);
+    process.exit(1);
     break;
   }
+
+  process.exit(0);
 }

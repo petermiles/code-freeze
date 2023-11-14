@@ -20,7 +20,7 @@ jobs:
 
       - name: Check if code freeze
         id: codefreeze
-        run: node .github/actions/check-code-freeze.js
+        run: node .github/actions/scripts/check-for-codefreeze.js
         continue-on-error: true
 
   check-comment:

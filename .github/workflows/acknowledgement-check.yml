@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Fail by default
-        run: exit 1
+        run: echo Hello && exit 1
 
       - name: Check for specific comment
         uses: khan/pull-request-comment-trigger@v1.1.0

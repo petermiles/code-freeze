@@ -9,7 +9,7 @@ async function run() {
     const octokit = github.getOctokit(githubToken);
     const prNumber = context.payload.pull_request.number;
 
-    const { data: labels } = await octokit.issues.listLabelsOnIssue({
+    const { data: labels } = await octokit.rest.issues.listLabelsOnIssue({
       owner: context.repo.owner,
       repo: context.repo.repo,
       issue_number: prNumber,

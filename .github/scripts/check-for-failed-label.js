@@ -2,7 +2,7 @@ const github = require("@actions/github");
 const core = require("@actions/core");
 
 async function run() {
-  const githubToken = core.getInput("github-token");
+  const githubToken = process.env["github-token"];
   const context = github.context;
 
   if (context.eventName === "pull_request") {

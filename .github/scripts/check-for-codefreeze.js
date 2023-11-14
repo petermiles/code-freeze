@@ -16,11 +16,11 @@ for (const { start, end, reason } of codeFreezes) {
   const freezeEnd = new Date(end);
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
-    const githubToken = core.getInput("github-token");
+    const githubToken = process.env["github-token"];
     const context = github.context;
 
     if (context.eventName === "pull_request") {
-      const octokit = github.getOctokit(githubToken);
+      const octokit = github.getOctokit();
       const prNumber = context.payload.pull_request.number;
 
       const labelName = "Failed Codefreeze Check";

@@ -1,0 +1,74 @@
+name: Code Freeze and Comment Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited, closed]
+  issue_comment:
+    types: [created]
+
+jobs:
+  check-for-freeze:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+
+      - name: Install npm v9
+        shell: bash
+        run: npm i -g npm@9.2.0
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Check if code freeze
+        id: codefreeze
+        run: node .github/scripts/check-for-codefreeze.js
+
+      - name: Add label
+        if: ${{ steps.codefreeze.outputs.isInFreeze == 'true' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: ['Failed Codefreeze Check']
+            })
+
+      - name: Add comment
+        if: ${{ steps.codefreeze.outputs.isInFreeze == 'true' }}
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: 'This PR failed the code freeze check. To merge it, please remove the "Failed Codefreeze Check" label.'
+            })
+
+  check-for-failed-label:
+    needs: check-for-freeze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+
+      - name: Check for Failed Codefreeze Check label
+        run: node .github/scripts/check-for-failed-label.js
+        env:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

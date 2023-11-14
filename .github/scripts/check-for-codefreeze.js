@@ -19,7 +19,7 @@ for (const { start, end, reason } of codeFreezes) {
     const githubToken = process.env.GITHUB_TOKEN;
     const context = github.context;
 
-    console.log({ context });
+    // console.log({ context });
 
     if (context.eventName === "pull_request") {
       const octokit = github.getOctokit(githubToken);
@@ -28,8 +28,8 @@ for (const { start, end, reason } of codeFreezes) {
       const labelName = "Failed Codefreeze Check";
 
       console.log("here it is", {
-        owner: context.payload.repository.owner,
-        repo: context.payload.repository,
+        owner: context.repo.owner,
+        repo: context.repo,
         issue_number: prNumber,
         labels: [labelName],
       });

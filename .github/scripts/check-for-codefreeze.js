@@ -1,3 +1,5 @@
+const core = require("@actions/core");
+
 const codeFreezes = [
   {
     start: "2023-11-14T17:59:19Z",
@@ -13,8 +15,7 @@ for (const { start, end, reason } of codeFreezes) {
   const freezeEnd = new Date(end);
 
   if (currentTime >= freezeStart && currentTime <= freezeEnd) {
-    console.log(`Code freeze is in effect: ${reason}`);
-    process.exit(1);
+    core.setFailed(reason);
     break;
   }
 
